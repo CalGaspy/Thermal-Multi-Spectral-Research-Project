@@ -1,6 +1,5 @@
 # Multispectral and Thermal UAV Camera System
 
-![System Diagram](images/system_diagram.png)
 
 This project integrates thermal and multispectral imaging sensors onto a UAV platform for environmental monitoring and wildfire research. The system uses a Raspberry Pi 4, GPS data logging, and MAVLink communication to trigger image capture and synchronize data collection during flight.
 
