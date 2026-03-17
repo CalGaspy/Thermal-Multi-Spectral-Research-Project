@@ -1,121 +1,167 @@
 # Multispectral and Thermal UAV Camera System
 
-This project is a UAV-based camera trigger system designed to control and synchronize a **multispectral camera** and a **thermal camera** during flight. The system uses a **Raspberry Pi 4**, **MAVLink communication**, **GPS data logging**, and a **laptop control station** to trigger image capture and record location data for environmental monitoring and wildfire research.
+![System Diagram](images/system_diagram.png)
 
-## Overview
+This project integrates thermal and multispectral imaging sensors onto a UAV platform for environmental monitoring and wildfire research. The system uses a Raspberry Pi 4, GPS data logging, and MAVLink communication to trigger image capture and synchronize data collection during flight.
 
-The setup is built around a drone-mounted sensing platform that includes:
+The goal of this project is to build a low-cost aerial sensing platform capable of collecting geotagged multispectral and thermal data for applications such as vegetation analysis, wildfire monitoring, and environmental research.
 
-- Multispectral camera
-- Thermal camera
-- Raspberry Pi 4
-- RTK GPS system
-- Multispectral GPS
-- Power supply and voltage regulation
-- USB-C radio link
-- Laptop ground station
-
-The laptop sends MAVLink trigger commands through a radio link to the Raspberry Pi. The Raspberry Pi receives those commands and triggers the cameras while also logging GPS data for each event.
-
-## Main Features
-
-- Trigger multispectral camera capture
-- Start and stop thermal camera recording
-- Log GPS coordinates for each trigger event
-- Store event data in a CSV file
-- Control trigger timing from a laptop GUI
-- Separate onboard and ground-station scripts
+---
 
 ## System Architecture
 
-### Ground Station
-The laptop runs a Python-based control interface that:
+The platform is mounted on a DJI M600 drone and integrates:
 
-- Connects to the radio link
-- Sends MAVLink commands
-- Starts and stops camera triggering
-- Adjusts trigger interval
-- Displays connection status and activity logs
+- Multispectral camera  
+- Thermal camera  
+- Raspberry Pi 4  
+- RTK GPS system  
+- Multispectral GPS module  
+- Power supply and voltage regulator  
+- USB-C radio link  
+- Laptop ground station  
 
-### Onboard System
-The Raspberry Pi:
+Power from the drone is routed through a power supply and voltage regulator board which distributes:
 
-- Waits for incoming MAVLink commands
-- Triggers the multispectral camera through GPIO
-- Controls the thermal camera using PWM
-- Reads GPS data from `gpsd`
-- Logs each event with timestamp and coordinates
+- 12V power to the multispectral camera  
+- 5V power to the Raspberry Pi and communication modules  
 
-## Files
+A laptop ground station sends trigger commands through a radio link. These commands are received by the Raspberry Pi onboard the drone.
 
-- `LaptopBase.py`  
-  Ground control station interface for connecting, triggering, and adjusting timing.
+The Raspberry Pi then:
 
-- `RaspberryPiSation.py`  
-  Onboard Raspberry Pi script for receiving commands, triggering cameras, and logging GPS data.
+- receives trigger commands from the ground station  
+- triggers the multispectral camera through GPIO  
+- controls the thermal camera signal  
+- reads GPS information from the RTK system  
+- logs event metadata for each image capture  
 
-## How It Works
+Images are stored locally on each camera’s SD card while GPS metadata is logged for synchronization and geotagging.
 
-1. The laptop connects to the radio link.
-2. The operator starts the trigger loop from the GUI.
-3. MAVLink commands are sent to the Raspberry Pi.
-4. The Raspberry Pi:
-   - pulses GPIO for the multispectral camera
-   - sends PWM-based control for the thermal camera
-   - records GPS data at the time of each event
-5. Images are saved to each camera’s SD card
-6. Trigger events are saved in a CSV log
+---
 
-## Hardware Used
+## Repository Structure
 
-- DJI M600 drone
-- Raspberry Pi 4
-- Multispectral camera
-- Thermal camera
-- RTK GPS
-- USB-C radio link
-- Voltage regulator board
-- Power supply
+project-root/
 
-## Software / Libraries
+README.md
 
-- Python
-- `pymavlink`
-- `RPi.GPIO`
-- `gps`
-- `customtkinter`
+scripts/
+  RaspberryPiTrigger.py
+  LaptopTriggerCode.py
 
-## Example Logged Data
+images/
+  system_diagram.png
+  development/
 
-Each trigger event is saved to a CSV file with:
+stl_mounts/
+  3D printed mounts for cameras and electronics
 
-- event time
-- UTC timestamp
-- MAVLink command
-- event label
-- latitude
-- longitude
-- altitude
-- GPS fix quality
+---
+
+## Code
+
+### Raspberry Pi Script
+
+scripts/RaspberryPiTrigger.py
+
+Runs onboard the drone and is responsible for:
+
+- receiving MAVLink commands  
+- triggering the multispectral camera  
+- controlling the thermal camera signal  
+- collecting GPS data using gpsd  
+- logging trigger events to a CSV file  
+
+---
+
+### Ground Station Script
+
+scripts/LaptopTriggerCode.py
+
+Runs on the laptop ground station and provides:
+
+- connection to the drone radio link  
+- camera trigger control  
+- adjustable trigger intervals  
+- system status monitoring  
+
+---
+
+## Development Process
+
+Development images documenting the build and testing process can be found in:
+
+images/development/
+
+These include:
+
+- early hardware integration  
+- camera mounting prototypes  
+- Raspberry Pi wiring  
+- system testing and validation  
+
+Example files:
+
+images/development/
+  mount_prototype.jpg
+  wiring_setup.jpg
+  pi_integration.jpg
+  field_test.jpg
+
+---
+
+## 3D Printed Mounts
+
+The repository includes STL files for the 3D printed mounts used to attach cameras and onboard electronics to the UAV platform.
+
+All STL files are located in:
+
+stl_mounts/
+
+These mounts were designed to securely hold:
+
+- multispectral camera  
+- thermal camera  
+- Raspberry Pi  
+- sensor mounting plates  
+
+The files can be directly used for 3D printing or modified for different UAV frames or sensor configurations.
+
+Example structure:
+
+stl_mounts/
+  multispectral_camera_mount.stl
+  thermal_camera_mount.stl
+  raspberry_pi_mount.stl
+  mounting_plate.stl
+
+---
 
 ## Applications
 
-This system was developed for research applications such as:
+This system supports several research applications including:
 
-- wildfire monitoring
-- vegetation analysis
-- thermal mapping
-- environmental sensing
-- geotagged aerial data collection
+- wildfire monitoring  
+- vegetation health analysis  
+- thermal mapping  
+- environmental sensing  
+- geotagged aerial data collection  
+
+---
 
 ## Future Improvements
 
-- automatic image-to-log synchronization
-- improved fault handling
-- mission-based trigger automation
-- tighter integration with flight controller telemetry
-- post-processing pipeline for thermal and multispectral datasets
+Possible future extensions include:
 
-## Repository Goal
+- automated mission-based triggering  
+- tighter integration with flight controller telemetry  
+- improved data synchronization  
+- automated post-processing pipeline  
+- onboard sensor fusion and data analysis  
 
-The goal of this repository is to document the development of a low-cost UAV sensing platform that integrates thermal and multispectral imaging for field research and environmental monitoring.
+---
+
+## Project Goal
+
+The goal of this repository is to document the development of a UAV-based multisensor imaging platform capable of collecting synchronized thermal and multispectral datasets for environmental and wildfire research.
