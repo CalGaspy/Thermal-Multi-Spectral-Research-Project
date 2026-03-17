@@ -48,10 +48,10 @@ The Raspberry Pi:
 
 ## Files
 
-- `LaptopTrggercode.py`  
+- `LaptopBase.py`  
   Ground control station interface for connecting, triggering, and adjusting timing.
 
-- `RaspberryPiTrigger.py`  
+- `RaspberryPiSation.py`  
   Onboard Raspberry Pi script for receiving commands, triggering cameras, and logging GPS data.
 
 ## How It Works
